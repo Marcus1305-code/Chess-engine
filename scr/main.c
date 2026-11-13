@@ -3,7 +3,7 @@
 
 int not_moved();
 int emeny_pawn();
-enum piece {pawn, knight, bishop, rook, queen, king};
+enum piece {empty, pawn, knight, bishop, rook, queen, king};
 enum piece_color {white, black};
 enum direction {NORTH,SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST};
 struct piece_in_chess {
@@ -19,7 +19,7 @@ struct board {
 };
 
 int main(void) {
-    printf("Hello, World!\n");
+
     return 0;
 }
 
@@ -34,42 +34,42 @@ unsigned int piece_moves(enum piece piece, enum piece_color color) {
     unsigned int south_west = 1u << SOUTH_WEST;
     //0 = pawn 1=knight 2=bishop 3=rook 4=queen 5=king
     switch (piece) {
-        case 0: //pawn
+        case 1: //pawn
             if (color == white) {
                 return north | north_east | north_west;
             } else {
                 return south | south_east | south_west;
             }
             break;
-        case 1: //knight
+        case 2: //knight
             if (color == white) {
                 return north | south | east | west;
             } else {
                 return north | south | east | west;
             }
             break;
-        case 2: //bishop
+        case 3: //bishop
             if (color == white) {
                 return north_east | north_west | south_east | south_west;
             } else {
                 return north_east | north_west | south_east | south_west;
             }
             break;
-        case 3: //rook
+        case 4: //rook
             if (color == white) {
                 return north | south | east | west;
             } else {
                 return north | south | east | west;
             }
             break;
-        case 4: //queen
+        case 5: //queen
             if (color == white) {
                 return north |north_east| north_west | south | south_east| south_west | east | west;
             } else {
                 return north |north_east| north_west | south | south_east| south_west | east | west;
             }
             break;
-        case 5: // king
+        case 6: // king
             if (color == white) {
                 return north |north_east| north_west | south | south_east| south_west | east | west;
             } else {
@@ -83,7 +83,7 @@ unsigned int piece_moves(enum piece piece, enum piece_color color) {
 }
 
 int possible_moves() {
-    switch () {
+    switch (1) {
         case 0:
             break;
         case 1:
@@ -91,13 +91,17 @@ int possible_moves() {
     }
     return 0;
 }
-void chess_board() {
+void chess_board(struct board *board) {
     int index = 0;
-    int size = 8;
-    int *board = malloc(sizeof(int) * size * size);
+    int size = board->size;
+    board->piece_in_chess = malloc(sizeof(struct piece_in_chess) * size * size);
+    if (board->piece_in_chess == NULL) {
+        return;
+    }
     for (int x = 0; x < size; x++) {
         for (int y = 0; y < size; y++) {
-            board[x * size + y] = -1;
+            index = x * size + y;
+            board->piece_in_chess[index].piece = empty;
         }
     }
 }
@@ -105,17 +109,60 @@ struct piece_in_chess get_cell(struct board board, int x, int y) {
     int size = board.size;
     return board.piece_in_chess[x * size + y];
 }
-/*
- *initialize_board(): Opsæt hele skakbrættet med alle 32 brikker ved at bruge insert_board().
- *insert_board(): Placér én brik på en bestemt position med en bestemt farve.
- */
-// er en start men ikke færdig skal laves nogle ændringer i
-struct board insert_board(struct board board, int x, int y, enum piece pieces, enum piece_color color) {
-    int size = board.size;
-    board.piece_in_chess->piece_color = white;
-    for (int i = 0; i < 8; i++) {
-        board.piece_in_chess[1 * size + i].piece_color = white;
-        board.piece_in_chess[1 * size + i].piece = pawn;
+void insert_board(struct board *board, int x, int y,enum piece pieces, enum piece_color color) {
+    int index;
+    int size = board->size;
+    index = x * size + y;
+    board->piece_in_chess[index].piece = pieces;
+    board->piece_in_chess[index].piece_color = color;
+}
+void initialize_board(struct board *board) {
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            if ((x == 0 && y == 0) ||(x == 7 && y == 0)) {
+                insert_board(board, x, y, rook, white);
+            }
+            if ((x == 1 && y == 0) || (x == 6 && y == 0)) {
+                insert_board(board, x, y, knight, white);
+            }
+            if ((x == 2 && y == 0) || (x == 5 && y == 0)) {
+                insert_board(board, x, y, bishop, white);
+            }
+            if (x == 3 && y == 0) {
+                insert_board(board, x, y, queen, white);
+            }
+            if (x == 4 && y == 0) {
+                insert_board(board, x, y, king, white);
+            }
+            if (y == 1) {
+                insert_board(board, x, y, pawn, white);
+            }
+            //--------------------------------------- sort
+            if ((x == 0 && y == 7) || (x == 7 && y == 7)) {
+                insert_board(board, x, y, rook, black);
+            }
+            if ((x == 1 && y == 7) || (x == 6 && y == 7)) {
+                insert_board(board, x, y, knight, black);
+            }
+            if ((x == 2 && y == 7) || (x == 5 && y == 7)) {
+                insert_board(board, x, y, bishop, black);
+            }
+            if (x == 3 && y == 7) {
+                insert_board(board, x, y, queen, black);
+            }
+            if (x == 4 && y == 7) {
+                insert_board(board, x, y, king, black);
+            }
+
+            if (y == 6) {
+                insert_board(board, x, y, pawn, black);
+            }
+        }
     }
-    return board;
+
+
+}
+
+void print_board() {
+
 }
