@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int not_moved();
-int emeny_pawn();
+
 enum piece {empty, pawn, knight, bishop, rook, queen, king};
-enum piece_color {white, black};
+enum piece_color {white, black, none};
 enum direction {NORTH,SOUTH, EAST, WEST, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST};
 struct piece_in_chess {
     enum piece piece;
@@ -17,9 +16,19 @@ struct board {
     int size;
     struct piece_in_chess *piece_in_chess;
 };
+void print_board(struct board *board);
+void chess_board(struct board *board);
+struct piece_in_chess get_cell(struct board board, int x, int y);
+void insert_board(struct board *board, int x, int y,enum piece pieces, enum piece_color color);
+void initialize_board(struct board *board);
 
 int main(void) {
-
+    struct board b;
+    b.size = 8;
+    chess_board(&b);
+    initialize_board(&b);
+    print_board(&b);
+    free(b.piece_in_chess);
     return 0;
 }
 
@@ -82,15 +91,6 @@ unsigned int piece_moves(enum piece piece, enum piece_color color) {
     return 0;
 }
 
-int possible_moves() {
-    switch (1) {
-        case 0:
-            break;
-        case 1:
-            break;
-    }
-    return 0;
-}
 void chess_board(struct board *board) {
     int index = 0;
     int size = board->size;
@@ -105,10 +105,12 @@ void chess_board(struct board *board) {
         }
     }
 }
+
 struct piece_in_chess get_cell(struct board board, int x, int y) {
     int size = board.size;
     return board.piece_in_chess[x * size + y];
 }
+
 void insert_board(struct board *board, int x, int y,enum piece pieces, enum piece_color color) {
     int index;
     int size = board->size;
@@ -116,6 +118,7 @@ void insert_board(struct board *board, int x, int y,enum piece pieces, enum piec
     board->piece_in_chess[index].piece = pieces;
     board->piece_in_chess[index].piece_color = color;
 }
+
 void initialize_board(struct board *board) {
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
@@ -157,12 +160,52 @@ void initialize_board(struct board *board) {
             if (y == 6) {
                 insert_board(board, x, y, pawn, black);
             }
+            if (y == 5 || y == 4 || y == 3 || y == 2) {
+                insert_board(board, x, y, empty, none);
+            }
         }
     }
-
-
 }
 
-void print_board() {
+void print_board(struct board *board) {
+    int index;
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            struct piece_in_chess pieces = get_cell(*board, x, y);
+            printf(" %d",pieces.piece);
+            printf(" %d", pieces.piece_color);
+        }
+        printf("\n");
+    }
+}
+
+//laver på skolen med whiteboard for at forstå koden her. der skal også convertes
+//fra tal til chars og symbol ændring for at få et nice print
+void pawn_movement(struct board *board) {
+
+}
+void knight_movement(struct board *board, int x, int y) {
+
+}
+void bishop_movement(struct board *board) {
+
+}
+void rook_movement(struct board *board, int x, int y, int turn, int new_x, int new_y) {
+    struct piece_in_chess rk = get_cell(*board, x, y);
+    struct piece_in_chess rk_new = get_cell(*board, new_x, new_y);
+    //starten af passage af andre brikker af ens egne
+    if (1) {
+        return;
+    }
+    unsigned int movement_pattern = piece_moves(rook, turn);
+    if (1) {
+
+    }
+    //
+}
+void queen_movement(struct board *board) {
+
+}
+void king_movement(struct board *board) {
 
 }
