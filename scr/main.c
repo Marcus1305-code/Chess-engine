@@ -194,7 +194,12 @@ void rook_movement(struct board *board, int x, int y, int turn, int new_x, int n
     struct piece_in_chess rk = get_cell(*board, x, y);
     struct piece_in_chess rk_new = get_cell(*board, new_x, new_y);
     //starten af passage af andre brikker af ens egne
-    if (1) {
+    //her tjekkes for farve mellem alle pladserne
+    for (int i = 0; i < 8; i++) {
+
+    }
+    if (1/**/) {
+
         return;
     }
     unsigned int movement_pattern = piece_moves(rook, turn);
