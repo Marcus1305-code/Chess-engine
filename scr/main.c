@@ -16,6 +16,7 @@ struct board {
     int size;
     struct piece_in_chess *piece_in_chess;
 };
+int havent_moved(struct board *board, int x, int y, int turn);
 void print_board(struct board *board);
 void chess_board(struct board *board);
 struct piece_in_chess get_cell(struct board board, int x, int y);
@@ -178,11 +179,66 @@ void print_board(struct board *board) {
         printf("\n");
     }
 }
-
+//insert_board brug istead for get_cell() functionen
 //laver på skolen med whiteboard for at forstå koden her. der skal også convertes
 //fra tal til chars og symbol ændring for at få et nice print
-void pawn_movement(struct board *board) {
+void pawn_movement(struct board *board, int turn) {
+    int x = 0;
+    int y = 0;
+    int move = havent_moved(board, x, y, turn);
+    struct piece_in_chess piece_pawn = get_cell(*board, x, y);
+    if (turn == 0) {
+        //player1 // white
 
+        printf("what pawn? \n");
+        scanf("%d", &x);
+        scanf("%d", &y);
+        get_cell(*board, x, y);
+        if (move == 1) {
+            piece_pawn.piece = empty;
+            printf("length of the move?\n");
+            scanf("%d", &y);
+
+            if (y > 2) {
+                scanf("%d", &y);
+            }
+            get_cell(*board, x, y);
+            piece_pawn.piece = pawn;
+        } else {
+            piece_pawn.piece = empty;
+            printf("length of the move?\n");
+            scanf("%d", &y);
+
+            if (y > 1) {
+                scanf("%d", &y);
+            }
+            get_cell(*board, x, y);
+            piece_pawn.piece = pawn;
+        }
+
+    } else {
+        if (move == 1) {
+            piece_pawn.piece = empty;
+            printf("length of the move?\n");
+            scanf("%d", &y);
+
+            if (y > 2) {
+                scanf("%d", &y);
+            }
+            get_cell(*board, x, y);
+            piece_pawn.piece = pawn;
+        } else {
+            piece_pawn.piece = empty;
+            printf("length of the move?\n");
+            scanf("%d", &y);
+
+            if (y > 1) {
+                scanf("%d", &y);
+            }
+            get_cell(*board, x, y);
+            piece_pawn.piece = pawn;
+        }
+    }
 }
 void knight_movement(struct board *board, int x, int y) {
 
@@ -212,5 +268,23 @@ void queen_movement(struct board *board) {
 
 }
 void king_movement(struct board *board) {
+
+}
+int havent_moved(struct board *board, int x, int y, int turn) {
+    struct piece_in_chess move = get_cell(*board, x, y);
+    if (turn == 0) {
+        if (x == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+        if (x == 6) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
 
 }
